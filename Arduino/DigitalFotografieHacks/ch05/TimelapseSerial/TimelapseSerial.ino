@@ -1,0 +1,138 @@
+/* Digital Fotografie Hacks
+ * Timelapse: 
+ * Timelapse Fotografie
+ * v0.1, 2014-03-03, Peter Recktenwald 
+*/ 
+/*-----( Import needed libraries )-----*/
+#include <SoftwareSerial.h>   // We need this even if we're not using a SoftwareSerial object
+                              // Due to the way the Arduino IDE compiles
+#include <SerialCommand.h>
+/*-----( Declare Constants )-----*/
+#define focusPin    8 
+#define shutterPin  9
+#define launchPin   13
+
+#define SHUTTER_DELAY  100
+
+#define btnSTART  6
+#define btnNONE   0
+
+#define modNONE    0
+#define modRUNNING 1
+
+/*-----( Declare objects )-----*/
+SerialCommand SCmd;   // The demo SerialCommand object
+
+/*-----( Declare Variables )-----*/
+
+long newCount = 300;
+long newDelay = 5000;
+int newCommand = btnNONE;
+long cnt, dly;
+int mode = modNONE;
+  
+void setup() {
+  // set up
+  pinMode(shutterPin, OUTPUT);
+  pinMode(focusPin, OUTPUT);
+
+  SCmd.addCommand("D",processDelayCmd);
+  SCmd.addCommand("C",processCountCmd);
+  SCmd.addCommand("S",processStartCmd);
+  SCmd.addDefaultHandler(unrecognized);  // Handler for command that isn't matched  (says "What?") 
+
+  Serial.begin(57600);  // Used to type in characters
+  Serial.println("Timelapse v0.1");
+}
+
+void processDelayCmd()    
+{
+  int aNumber;  
+  char *arg; 
+
+  Serial.println("We're in processDelayCmd"); 
+  arg = SCmd.next(); 
+  if (arg != NULL) 
+  {
+    aNumber=atoi(arg);    // Converts a char string to an integer
+    Serial.print("Shutter Delay: "); 
+    Serial.println(aNumber); 
+    newDelay = aNumber;
+  } 
+  else {
+    Serial.println("No arguments"); 
+  }
+}
+
+void processCountCmd()    
+{
+  int aNumber;  
+  char *arg; 
+
+  Serial.println("We're in processCountCmd"); 
+  arg = SCmd.next(); 
+  if (arg != NULL) 
+  {
+    aNumber=atoi(arg);    // Converts a char string to an integer
+    Serial.print("Counter: "); 
+    Serial.println(aNumber); 
+    newCount = aNumber;
+  } 
+  else {
+    Serial.println("No arguments"); 
+  }
+}
+
+void processStartCmd()    
+{
+  Serial.println("We're in processStartCmd"); 
+  newCommand = btnSTART;
+  
+}
+
+// This gets set as the default handler, and gets called when no other command matches. 
+void unrecognized()
+{
+  Serial.println("What?"); 
+}
+
+void launchShutter()
+{
+  digitalWrite(focusPin, HIGH);
+  digitalWrite(shutterPin, HIGH);
+
+  delay(SHUTTER_DELAY);
+  digitalWrite(shutterPin, LOW);
+  digitalWrite(focusPin, LOW);
+}
+
+void loop() 
+{
+  SCmd.readSerial();     // We don't do much, just process serial commands
+
+  if (newCommand == btnSTART)
+  {
+    cnt = newCount;
+    dly = newDelay;
+    mode = modRUNNING;    
+    newCommand = btnNONE;
+    Serial.println("running.."); 
+  }
+  
+  if (mode == modRUNNING)
+  { 
+    if (cnt)
+    {
+      delay(dly);
+      launchShutter();
+      Serial.print("shoot "); 
+      Serial.println(cnt, DEC); 
+      cnt--;
+    }
+    else
+    {
+      mode = modNONE;
+    }      
+  }
+
+}
