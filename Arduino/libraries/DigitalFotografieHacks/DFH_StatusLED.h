@@ -16,6 +16,7 @@
 class DFH_StatusLED {
   public:
     DFH_StatusLED(int _greenLedPin, int _redLEdPin);   // Konstruktor
+    void begin(void);
     void on(int color);
     void off(void);
     void blink(int color, int time);

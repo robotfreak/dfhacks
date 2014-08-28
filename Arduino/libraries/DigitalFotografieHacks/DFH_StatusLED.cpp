@@ -11,6 +11,10 @@ DFH_StatusLED::DFH_StatusLED(int _greenLedPin, int _redLedPin)
 {
   this->greenLedPin = _greenLedPin;
   this->redLedPin = _redLedPin;
+}
+
+/*-----( StatusLED begin )-----*/
+void DFH_StatusLED::begin(void){
   pinMode(this->greenLedPin, OUTPUT);
   pinMode(this->redLedPin, OUTPUT); 
 }
@@ -41,10 +45,15 @@ void DFH_StatusLED::off(void){
 }
  
 /*-----( StatusLED blink )-----*/
-void DFH_StatusLED::blink(int color, int time){
-  on(color);                    // sets the LED on
-  delay(time/2);                // waits for a second
-  off();                        // sets the LED off
-  delay(time/2);                // waits for a second
+void DFH_StatusLED::blink(int color, int times){
+  int c = times;
+  int time = 1000;
+  while (c--)
+  {
+    on(color);                    // sets the LED on
+    delay(time/2);                // waits for a second
+    off();                        // sets the LED off
+    delay(time/2);                // waits for a second
+  }
 }
 

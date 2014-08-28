@@ -28,13 +28,11 @@ int DFH_JoystickD::read(void)
   }
 
   if (this->adcKey > 1000) btn = btnNONE; 
-  else if (this->adcKey < 250)  btn = btnRIGHT; 
-  else if (this->adcKey < 340)  btn = btnSELECT; 
-  else if (this->adcKey < 530)  btn = btnDOWN; 
-  else if (this->adcKey < 720)  btn = btnLEFT; 
-  else if (this->adcKey < 850)  btn = btnUP;  
-  else if (this->adcKey < 900)  btn = btnSTART;  
-  else if (this->adcKey < 930)  btn = btnEXTERN;   
+  else if ((this->adcKey > 320) && (this->adcKey < 420))  btn = btnSELECT; 
+  else if ((this->adcKey > 170) && (this->adcKey < 240))  btn = btnDOWN; 
+  else if ((this->adcKey >  80) && (this->adcKey < 130))  btn = btnLEFT; 
+  else if ((this->adcKey > 500) && (this->adcKey < 550))  btn = btnUP;  
+  else if ((this->adcKey > 680) && (this->adcKey < 750))  btn = btnRIGHT;  
   
   return btn;
 }
