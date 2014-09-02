@@ -7,7 +7,9 @@
 
 // define i2c slave address 
 #define I2C_ADDRESS 0x2A
-#define I2C_CMD_LEN  2
+#define I2C_CMD_LEN  3
+
+#define CMD_SERVO 0x40
 
 #define servo1Pin  7
 #define servo2Pin  8
@@ -16,8 +18,7 @@ volatile char i2cCmd[I2C_CMD_LEN];
 volatile bool i2cCmdRcv; 
 volatile int i2cCmdIdx;
 
-Servo myServo1();
-Servo myServo2();
+Servo myServos[2];
 
 // callback for received data
 void receiveData(int byteCount) 
@@ -28,7 +29,7 @@ void receiveData(int byteCount)
     i2cCmd[i2cCmdIdx] = Wire.read(); 
     i2cCmdIdx++;
   }
-  if (i2cCmdIdx == 2)
+  if (i2cCmdIdx == 3)
   {
     i2cCmdRcv = true;
     i2cCmdIdx = 0;
@@ -56,12 +57,12 @@ void setup()
   i2cCmdIdx = 0;
 
   // attach servos to servo pins
-  myServo1.attach(servo1Pin);
-  myServo2.attach(servo2Pin);
+  myServos[0].attach(servo1Pin);
+  myServos[1].attach(servo2Pin);
 
   // center servos
-  myServo1.write(90);
-  myServo2.write(90);
+  myServo[0].write(90);
+  myServo[1].write(90);
 }
 
 void loop()
@@ -69,10 +70,13 @@ void loop()
   if (i2cCmdRcv == true)
   {
     i2cCmdRcv = false;
-    if (i2cCmd[0] == 1)
-      myServo1.write(cmd[1]);
-    else if (i2cCmd[0] == 2)
-      myServo2.write(cmd[1]);
+    if (i2cCmd[0] == CMD_SERVO)
+    {
+      if (i2cCmd[1] == 1)
+        myServos[0].write(cmd[2]);
+      else if (i2cCmd[0] == 2)
+        myServos[1].write(cmd[2]);
+    }
   }
 }
 
