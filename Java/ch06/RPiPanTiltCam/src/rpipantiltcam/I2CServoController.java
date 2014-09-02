@@ -34,25 +34,15 @@ public class I2CServoController {
         }
     }
     
-    public void setPan(byte pos) throws IOException {
+    public void setServo(byte num, byte pos) throws IOException {
         System.out.println("setPan " + pos);
-        byte[] buffer = new byte[2];
-        buffer[0] = 1;
-        buffer[1] = pos;
+        byte[] buffer = new byte[3];
+        buffer[0] = 0x40;   // command CMD_SERVO
+        buffer[1] = num;    // Servo number
+        buffer[2] = pos;    // Servo position
         if (arduino != null) {
             arduino.write(buffer, 0, buffer.length);
         }
     }
             
-    public void setTilt(byte pos) throws IOException {
-        System.out.println("setTilt " + pos);
-        byte[] buffer = new byte[2];
-        buffer[0] = 2;
-        buffer[1] = pos;
-        if (arduino != null) {
-            arduino.write(buffer, 0, buffer.length);
-        }
-        
-    }
-    
 }

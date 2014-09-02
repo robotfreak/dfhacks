@@ -89,12 +89,12 @@ public class RPiPanTiltCam {
                 else if ("Pan".equals(splitStr[0]))
                 {
                    System.out.println("Pan:" + splitStr[1]);
-                   ServoControl.setPan((byte) (180-Integer.parseInt(splitStr[1])));
+                   ServoControl.setServo((byte) 1, (byte) (180-Integer.parseInt(splitStr[1])));
                 }
                 else if ("Tilt".equals(splitStr[0]))
                 {
                    System.out.println("Tilt:" + splitStr[1]);
-                   ServoControl.setTilt((byte) (180-Integer.parseInt(splitStr[1])));
+                   ServoControl.setServo((byte) 2 ,(byte) (180-Integer.parseInt(splitStr[1])));
                 }
                 else if ("Count".equals(splitStr[0]))
                 {
