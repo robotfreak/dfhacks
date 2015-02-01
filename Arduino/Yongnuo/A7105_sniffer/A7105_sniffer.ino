@@ -1,3 +1,10 @@
+// Yongnuo RF-603 sniffer
+// using n A7105 chip and a Arduino /pro/micro with 3.3V
+// based on Flysky Tx Code by midelic on RCgroups.com
+//
+// created by RobotFreak
+// www.photofreak.de
+
 #include "a7105.h"
 
 #define SNIFF_MODE
