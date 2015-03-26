@@ -7,28 +7,40 @@
 #include <Wire.h>  // Comes with Arduino IDE
 // Get the LCD I2C Library here: 
 // http://forums.adafruit.com/viewtopic.php?f=19&t=21586&p=113177
-//#include <LiquidTWI2.h>
+#include <LiquidTWI.h>
 // https://bitbucket.org/fmalpartida/new-liquidcrystal/downloads
-#include <LiquidCrystal_I2C.h>
-#include <Encoder.h>
+//#include <LiquidCrystal_I2C.h>
+#include "DFH_Encoder.h"
+#include "DFH_OptoCam.h"
+#include "DFH_OptoFlash.h"
+#include "DFH_StatusLED.h"
+#include "DFH_JoystickA.h"
 
 /*-----( Declare Constants )-----*/
 #define focusPin    8 
 #define shutterPin  9
-#define launchPin   13
 
-#define encaPin     2
-#define encbPin     3
+#define flashPin    7
+
+#define encaPin     10
+#define encbPin     11
+
+#define greenLedPin 4
+#define redLedPin   5
+
+#define adcBtnPin   A0
+
+#define xPin A1   // horizontal Pin
+#define yPin A3   // vertikal Pin
+#define selPin 12 // select Pin
 
 #define FOCUS_DELAY  59
 #define SHUTTER_DELAY  100
 
-#define valvePin    7
+#define valvePin    A7
 
 #define DROP_LENGTH  20 
 #define DROP_DELAY  20 
-
-#define adcBtnPin   A6
 
 #define btnRIGHT  1
 #define btnUP     2
@@ -41,6 +53,9 @@
 
 #define USE_I2C_LCD
 
+#define LDC_ROWS  4
+#define LCD_COLS  16
+
 /*-----( Declare objects )-----*/
 #ifdef USE_I2C_LCD
 // set the LCD address to 0x27 for a 20 chars 4 line display
@@ -48,9 +63,15 @@
 //                    addr, en,rw,rs,d4,d5,d6,d7,bl,blpol
 //LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  // YwRobot Set the LCD I2C address
 //LiquidCrystal_I2C lcd(0x3F); /*, 20, 4);  // Sainsmart 2004 Set the LCD I2C address */
-LiquidCrystal_I2C lcd(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, NEGATIVE);  // Sainsmart 2004 (new) Set the LCD I2C address #endif
+//LiquidCrystal_I2C lcd(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, NEGATIVE);  // Sainsmart 2004 (new) Set the LCD I2C address #endif
+LiquidTWI lcd(0);   // Adafruit LCD I2C Backpack
+#endif
 
-Encoder myEnc(encaPin, encbPin);
+DFH_Encoder myEnc(encaPin, encbPin);
+DFH_OptoCam myCam(focusPin, shutterPin);
+DFH_OptoFlash myFlash(flashPin);
+DFH_StatusLED myStatusLED(greenLedPin, redLedPin);
+DFH_JoystickA joystick(xPin, yPin, selPin);
 
 /*-----( Declare Variables )-----*/
 
@@ -63,6 +84,13 @@ int adcKey;
 int oldAdcKey = -1;
 
 int menuSelected = true;
+int minVal = 1023;
+int maxVal = 0;
+int xVal;
+int yVal;
+int selVal;
+int joyVal;
+int oldJoyVal = -1;
 
 // read the buttons
 int readAdcButtons()
@@ -82,18 +110,17 @@ int readAdcButtons()
   if (adcKey < 450)  return btnDOWN; 
   if (adcKey < 580)  return btnLEFT; 
   if (adcKey < 710)  return btnSELECT; 
-  if (adcKey < 850)  return btnSTART;  
+  if (adcKey < 950)  return btnSTART;  
 
   return btnNONE;  // when all others fail, return this...
 }
   
 void setup() {
   // set up
-  pinMode(shutterPin, OUTPUT);
-  pinMode(focusPin, OUTPUT);
+  myEnc.write(newPosition);
+
   pinMode(valvePin, OUTPUT);
   digitalWrite(valvePin, LOW);
-  digitalRead(launchPin);
   Serial.begin(57600);  // Used to type in characters
   Serial.println("Drop Photos v0.1");
   Serial.print(newPosition, DEC);
@@ -106,17 +133,9 @@ void setup() {
   lcd.print(newPosition, DEC);
   lcd.print(" ms");
 #endif
-}
-
-void launchShutter()
-{
-  digitalWrite(focusPin, HIGH);
-  delay(FOCUS_DELAY);
-  digitalWrite(shutterPin, HIGH);
-
-  delay(SHUTTER_DELAY);
-  digitalWrite(shutterPin, LOW);
-  digitalWrite(focusPin, LOW);
+  myStatusLED.begin();
+  myStatusLED.on(COLOR_GREEN);
+  joystick.begin();
 }
 
 void launchDrop()
@@ -146,9 +165,16 @@ void loop()
     Serial.print("Btn: ");
     Serial.println(btnVal, DEC);
   } 
+  joyVal = joystick.read();
+  if (joyVal)
+  {
+    Serial.print("Result: ");
+    Serial.print("btn: ");
+    Serial.println(joyVal, DEC);
+  }
 
   btnVal = readAdcButtons();
-  if (btnVal == btnSELECT)
+  if (btnVal == btnSELECT || joyVal & 0x10)
   {
     Serial.print("Menu");
     while(btnVal != btnNONE)
@@ -192,22 +218,24 @@ void loop()
   btnVal = readAdcButtons();
   if (menuSelected == false)
   {
-    if (btnVal == btnSTART)
+    if (btnVal == btnSTART || joyVal & 0x10)
     {
       Serial.println("launch pressed");
       while(btnVal != btnNONE)
       {
         btnVal = readAdcButtons();
       }
+      myStatusLED.on(COLOR_RED);
       launchDrop();
       delay(newPosition);
-      launchShutter();
+      myCam.shoot();
 #ifdef USE_I2C_LCD
       lcd.setCursor(0, 3);
       lcd.print("launched");
 #endif
       Serial.println("launched");
       delay(1000);
+      myStatusLED.on(COLOR_GREEN);
     }
     else
     {
@@ -215,6 +243,14 @@ void loop()
       lcd.setCursor(0, 3);
       lcd.print("ready   ");
 #endif
+      if (joyVal & 0x01 || joyVal & 0x08)
+      {
+         menuSelected = true;
+#ifdef USE_I2C_LCD
+        lcd.setCursor(0, 3);
+        lcd.print("Menu    ");
+#endif
+      }
     }
   }
 

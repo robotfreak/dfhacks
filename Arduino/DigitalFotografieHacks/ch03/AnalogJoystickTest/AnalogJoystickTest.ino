@@ -17,7 +17,7 @@ int maxVal = 0;
 int xVal;
 int yVal;
 int selVal;
-int btnVal;
+int joyVal;
 
 DFH_JoystickA joystick(xPin, yPin, selPin);
 
@@ -33,7 +33,7 @@ void loop()
 {
   minVal = 1023;
   maxVal = 0;
-  btnVal = joystick.read();
+  joyVal = joystick.read();
 /*
   selVal = joystick.read(&xVal, &yVal);
   if (selVal == 0)  // Select Taste gedrueckt?
@@ -41,11 +41,11 @@ void loop()
     Serial.println("Select Key pressed");
   }
 */  
-  if (btnVal)
+  if (joyVal)
   {
     Serial.print("Result: ");
     Serial.print("btn: ");
-    Serial.println(btnVal, DEC);
+    Serial.println(joyVal, DEC);
   }
 /*  
   Serial.print(" x: ");
