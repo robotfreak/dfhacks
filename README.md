@@ -12,7 +12,7 @@ http://www.oreilly.de/catalog/digfotografiehacksger/
 
 Begleitender Quellcode zum gleichnamigen Buch von Peter Recktenwald. 
 
-* [Arduino Quellen](Arduino)
+* [Arduino Quellen und Bibliothek](Arduino)
 * [Java Quellen](Java)
 * [Fritzing Schaltpläne](Fritzing)
 
