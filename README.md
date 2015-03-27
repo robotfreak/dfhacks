@@ -12,8 +12,8 @@ http://www.oreilly.de/catalog/digfotografiehacksger/
 
 Begleitender Quellcode zum gleichnamigen Buch von Peter Recktenwald. 
 
-* [Arduino Quellen und Bibliothek](Arduino)
-* [Java Quellen](Java)
-* [Fritzing Schaltpläne](Fritzing)
+* [Arduino Quellen und Bibliothek](https://github.com/robotfreak/dfhacks/Arduino)
+* [Java Quellen](https://github.com/robotfreak/dfhacks/Java)
+* [Fritzing Schaltpläne](https://github.com/robotfreak/dfhacks/Fritzing)
 
 
