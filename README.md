@@ -8,7 +8,7 @@ ISBN 3955616444
 
 http://www.oreilly.de/catalog/digfotografiehacksger/
 
-[![Cover](https://github.com/robotfreak/dfhacks/blob/master/Images/cover_small.jpg)](https://github.com/robotfreak/dfhacks/blob/master/Images/cover.jpg)
+[![Cover](https://github.com/robotfreak/dfhacks/raw/master/Images/cover_small.jpg)](https://github.com/robotfreak/dfhacks/blob/master/Images/cover.jpg)
 
 Begleitender Quellcode zum gleichnamigen Buch von Peter Recktenwald. 
 
