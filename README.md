@@ -8,12 +8,12 @@ ISBN 3955616444
 
 http://www.oreilly.de/catalog/digfotografiehacksger/
 
-[![Cover](Images/cover_small.jpg)](https://github.com/robotfreak/dfhacks/Images/cover.jpg)
+[![Cover](Images/cover_small.jpg)](https://github.com/robotfreak/dfhacks/tree/master/Images/cover.jpg)
 
 Begleitender Quellcode zum gleichnamigen Buch von Peter Recktenwald. 
 
-* [Arduino Quellen und Bibliothek](https://github.com/robotfreak/dfhacks/Arduino)
-* [Java Quellen](https://github.com/robotfreak/dfhacks/Java)
-* [Fritzing Schaltpläne](https://github.com/robotfreak/dfhacks/Fritzing)
+* [Arduino Quellen und Bibliothek](https://github.com/robotfreak/dfhacks/tree/master/Arduino)
+* [Java Quellen](https://github.com/robotfreak/dfhacks/tree/master/Java)
+* [Fritzing Schaltpläne](https://github.com/robotfreak/dfhacks/tree/master/Fritzing)
 
 
