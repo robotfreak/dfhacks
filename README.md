@@ -5,6 +5,7 @@ Digitalfotografie mit Arduino, Raspberry Pi & Co.
 Erschienen im O'Reilly Verlag 2014
 
 ISBN-13: 978-3-95561-644-1
+
 ISBN-10: 3955616444
 
 http://www.oreilly.de/catalog/digfotografiehacksger/
