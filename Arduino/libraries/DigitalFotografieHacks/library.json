@@ -1,0 +1,13 @@
+{
+  "name": "dfhacks",
+  "keywords": "digital photography, hacks",
+  "description": "Digitalfotografie Hacks Library",
+  "include": "dfhacks",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/robotfreak/dfhacks.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}
