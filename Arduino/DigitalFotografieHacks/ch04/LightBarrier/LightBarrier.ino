@@ -10,13 +10,15 @@
 #define irLedPin 13
 #define irRcvPin 12
 
+int ledState = 0;
 /// --------------------------
 /// Custom ISR Timer Routine
 /// --------------------------
 void timerIsr()
 {
     // Toggle LED
-    digitalWrite( irLedPin, digitalRead( irLedPin ) ^ 1 );
+    digitalWrite( irLedPin, ledState);
+    ledState ^= 1;
 }
 
 void setup() {
